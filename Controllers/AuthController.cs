@@ -18,20 +18,27 @@ namespace E_Banking_API.Controllers
             _config = config;
         }
 
-        [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginDto loginDto)
-        {
-            //here the username and password are checked
-            var user = GetUserFromDatabase(loginDto.Username);
-            if (user == null || !VerifyPassword(user.PasswordHash, loginDto.Password))
-            {
-                return Unauthorized("Invalid credentials");
-            }
+        //[HttpPost("login")]
+        //public IActionResult Login([FromBody] LoginDto loginDto)
+        //{
+        //    //here the username and password are checked
+        //    var user = GetUserFromDatabase(loginDto.Username);
+        //    if (user == null || !VerifyPassword(user.PasswordHash, loginDto.Password))
+        //    {
+        //        return Unauthorized("Invalid credentials");
+        //    }
 
-            // jwt token is created
-            var token = GenerateJwtToken(user);
-            return Ok(new { token });
+        //    // jwt token is created
+        //    var token = GenerateJwtToken(user);
+        //    return Ok(new { token });
+        //}
+
+        public IActionResult Login([FromBody] Customer customer)
+        {
+            
         }
+
+
 
         private string GenerateJwtToken(User user)
         {
