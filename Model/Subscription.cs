@@ -5,6 +5,7 @@ namespace E_Banking_API.Model
     public class Subscription
     {
         [Key]
+        [Required]
         public int SubscriptionID { get; set; }
         [Required]
         public int CustomerID { get; set; }
@@ -19,7 +20,8 @@ namespace E_Banking_API.Model
         public DateTime StartDate { get; set; }
         [Required]
         public DateTime? EndDate { get; set; }
-        public bool Active { get; set; }
         [Required]
+        public bool Active { get; set; }
+        
     }
 }

@@ -5,6 +5,7 @@ namespace E_Banking_API.Model
     public class Transaction
     {
         [Key]
+        [Required]
         public int TransactionID { get; set; }
         [Required]
         public int AccountID { get; set; }
