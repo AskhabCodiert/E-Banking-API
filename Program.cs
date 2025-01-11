@@ -54,19 +54,19 @@ var app = builder.Build();
 
 
 //Auskommentieren wenn die Passwörter aus der DB nicht gehasht sind; Muss bei Programm-Start auskommentiert sein.
-using (var scope = app.Services.CreateScope())
-{
-    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    var customers = context.Customers.ToList();
-    foreach (var customer in customers)
-    {
-        if (!customer.PasswordHash.StartsWith("$2"))
-        {
-            customer.PasswordHash = BCrypt.Net.BCrypt.HashPassword(customer.PasswordHash);
-        }
-    }
-    context.SaveChanges();
-}
+//using (var scope = app.Services.CreateScope())
+//{
+//    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+//    var customers = context.Customers.ToList();
+//    foreach (var customer in customers)
+//    {
+//        if (!customer.PasswordHash.StartsWith("$2"))
+//        {
+//            customer.PasswordHash = BCrypt.Net.BCrypt.HashPassword(customer.PasswordHash);
+//        }
+//    }
+//    context.SaveChanges();
+//}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
