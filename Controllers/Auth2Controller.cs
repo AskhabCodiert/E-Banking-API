@@ -44,12 +44,50 @@ namespace E_Banking_API.Controllers
             });
         }
 
+        [HttpPost("validate")]
+        public IActionResult ValidateToken()
+        {
+            // Holen Sie den Token aus dem Authorization-Header
+            var authHeader = Request.Headers["Authorization"].FirstOrDefault();
+            if (authHeader == null || !authHeader.StartsWith("Bearer "))
+            {
+                return Unauthorized(new { message = "Token missing or invalid" });
+            }
+
+            var token = authHeader.Substring("Bearer ".Length);
+
+            try
+            {
+                // Token validieren
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var key = Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]);
+                var validationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidIssuer = _configuration["Jwt:Issuer"],
+                    ValidAudience = _configuration["Jwt:Audience"],
+                    ClockSkew = TimeSpan.Zero // Optionale Toleranz für Zeitabweichungen
+                };
+
+                tokenHandler.ValidateToken(token, validationParameters, out SecurityToken validatedToken);
+
+                // Token ist gültig
+                return Ok(new { message = "Token is valid" });
+            }
+            catch (Exception ex)
+            {
+                // Fehlerhafte Token-Verarbeitung
+                return Unauthorized(new { message = "Token is invalid", error = ex.Message });
+            }
+        }
 
         private string GenerateJwtToken(Customer customer)
         {
             var claims = new[] {
-                new Claim(JwtRegisteredClaimNames.Sub, customer.CustomerNumber),
-
+                new Claim(JwtRegisteredClaimNames.Sub, customer.CustomerID.ToString()),
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
@@ -58,13 +96,11 @@ namespace E_Banking_API.Controllers
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],
-                claims:  claims,
+                claims: claims,
                 expires: DateTime.Now.AddHours(1),
                 signingCredentials: creds);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
-
         }
-
     }
 }
