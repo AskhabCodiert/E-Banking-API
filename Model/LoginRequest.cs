@@ -3,6 +3,6 @@
     public class LoginRequest
     {
         public string CustomerNumber { get; set; }
-        public string Password { get; set; }    
+        public string CustomerPin { get; set; }    
     }
 }

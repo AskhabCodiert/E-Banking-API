@@ -25,8 +25,8 @@ namespace E_Banking_API.Controllers
         public IActionResult Login([FromBody] LoginRequest request)
         {
             var customer = _context.Customers.FirstOrDefault(c => c.CustomerNumber == request.CustomerNumber);
-
-            if (customer == null || !BCrypt.Net.BCrypt.Verify(request.Password, customer.PasswordHash))
+            var customer2 = _context.Customers.FirstOrDefault(c2 => c2.CustomerPin == request.CustomerPin);
+            if (customer == null || customer2 == null)
             {
                 return Unauthorized(new LoginResponse
                 {
